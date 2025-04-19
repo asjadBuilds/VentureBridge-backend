@@ -7,13 +7,13 @@ const route = express.Router();
 
 route.post('/createProduct',
      upload.fields([{name:'gallery', maxCount:6}, {name:'docs', maxCount:4}]),
-      
       [
         query('title').isEmpty(),
         query('description').isEmpty(),
         query('pricing').isEmpty(),
         query('category').isEmpty()
       ],
+      verifyJWT,
     createProduct);
 
 route.post('/getProduct',getProduct)
@@ -21,7 +21,7 @@ route.post('/getUserProducts',getUserProducts)
 route.post('/createCategory',[
     query('title').isEmpty(),
     query('categoryId').isEmpty()
-],upload.single('categoryIcon'), createCategory)
+],upload.single('categoryIcon'),verifyJWT, createCategory)
 
 route.post('/updateProduct',
   upload.fields([{name:'gallery', maxCount:6}, {name:'docs', maxCount:4}]),

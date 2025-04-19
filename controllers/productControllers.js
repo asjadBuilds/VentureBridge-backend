@@ -34,9 +34,9 @@ const createProduct = AsyncHandler(async (req, res) => {
     category: categoryObj,
     images: gallery,
     files: docs,
-    user:req.user._id
+    user:req?.user?._id
   });
-  const createdProduct = await Product.findById(product._id).populate(
+  const createdProduct = await Product.findById(product?._id).populate(
     "category",
     "title parentId"
   );
