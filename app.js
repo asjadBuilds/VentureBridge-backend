@@ -10,6 +10,7 @@ import { Server } from 'socket.io';
 import http from 'http';
 import { socketManager } from "./socketManager.js";
 const app = express();
+dotenv.config();
 const server = http.createServer(app);
 const io = new Server(server,{
   cors: {
@@ -29,7 +30,6 @@ app.use((req,res,next)=>{
 })
 app.use(cookieParser())
 
-dotenv.config();
 const twilioClient = twilio(
     process.env.TWILIO_ACCOUNT_SID,
     process.env.TWILIO_AUTH_TOKEN
