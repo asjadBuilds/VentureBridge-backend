@@ -433,8 +433,7 @@ const updateUserRole = AsyncHandler(async (req, res) => {
     { new: true }
   )
   const options = {
-    // httpOnly: true,
-    // secure: true,
+    sameSite: 'None'
   };
   res
   .status(200)

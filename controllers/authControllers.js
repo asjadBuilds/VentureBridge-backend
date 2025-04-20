@@ -83,8 +83,7 @@ const signIn = AsyncHandler(async (req, res) => {
     { new: true }
   ).select("-password -refreshToken -resetToken -accessToken");
   const options = {
-    // httpOnly: true,
-    // secure: true,
+    sameSite: 'None'
   };
   return res
     .status(200)
@@ -117,8 +116,7 @@ const logout = AsyncHandler(async (req, res) => {
     }
   );
   const options = {
-    // httpOnly: true,
-    // secure: true,
+    sameSite: 'None'
   };
   res
     .status(200)
@@ -144,8 +142,7 @@ const refreshAccessToken = AsyncHandler(async (req, res) => {
 
   if (decryptedToken !== incomingToken) throw new ApiError(402, "Invalid Refresh Token");
   const options = {
-    httpOnly: true,
-    secure: true,
+    sameSite: 'None'
   };
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
