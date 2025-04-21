@@ -261,7 +261,7 @@ const removeFromSaveProducts = AsyncHandler(async(req,res)=>{
 })
 
 const getSavedProducts = AsyncHandler(async(req,res)=>{
-  const savedProducts = await User.findById(req.user._id).populate('savedProducts')
+  const savedProducts = await User.findById(req.user._id).select('savedProducts').populate('savedProducts')
   res
   .status(200)
   .json(new ApiResponse(200,savedProducts, "Saved Products fetched successfully"))
