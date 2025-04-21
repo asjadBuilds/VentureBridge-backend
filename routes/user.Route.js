@@ -21,6 +21,7 @@ import {
   updateUserRole,
 } from "../controllers/userControllers.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { verify } from "crypto";
 const route = express.Router();
 
 route.post(
@@ -59,6 +60,6 @@ route.post('/getUserInfo',verifyJWT,getUserInfo)
 
 route.post("/updateAvatar",verifyJWT, upload.single("avatar"), updateAvatar);
 
-route.post('/updateUserRole', updateUserRole)
+route.post('/updateUserRole',verifyJWT, updateUserRole)
 
 export default route;
