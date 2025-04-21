@@ -427,19 +427,19 @@ const getUserInfo = AsyncHandler(async (req, res) => {
 
 const updateUserRole = AsyncHandler(async (req, res) => {
   const { role } = req.body;
-  await User.findByIdAndUpdate(req.user._id, {
+ const user = await User.findByIdAndUpdate(req.user._id, {
     $set: { role }
   },
     { new: true }
   )
-  const options = {
-    secure: true,
-    sameSite: 'None'
-  };
+  // const options = {
+  //   secure: true,
+  //   sameSite: 'None'
+  // };
   res
   .status(200)
-  .cookie('role',role, options)
-  .json(new ApiResponse(200, "User Role Updated Successfully"))
+  // .cookie('role',role, options)
+  .json(new ApiResponse(200, user, "User Role Updated Successfully"))
 })
 
 

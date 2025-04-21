@@ -230,15 +230,15 @@ console.log(ownProduct)
   if(!alreadySave && !ownProduct){
    user = await User.findByIdAndUpdate(req.user._id,{
       $push:{savedProducts:productId}
-    },{new:true}).select('-password -accessToken -refreshToken')
+    },{new:true}).select('-password -accessToken -refreshToken -resetToken')
   }
-  const options = {
-    secure: true,
-    sameSite: 'None'
-  };
+  // const options = {
+  //   secure: true,
+  //   sameSite: 'None'
+  // };
   res
   .status(200)
-  .cookie('userDetails',user, options)
+  // .cookie('userDetails',user, options)
   res
   .status(200)
   .json(new ApiResponse(200, user, "product added to savedProducts" ))
@@ -250,17 +250,14 @@ const removeFromSaveProducts = AsyncHandler(async(req,res)=>{
   if(!product) throw new ApiError(400, "User have no such Product");
   const user = await User.findByIdAndUpdate(req.user._id,{
     $pull:{savedProducts:productId}
-  },{new:true}).select('-password -accessToken -refreshToken')
-  const options = {
-    secure: true,
-    sameSite: 'None'
-  };
+  },{new:true}).select('-password -accessToken -refreshToken -resetToken')
+  // const options = {
+  //   secure: true,
+  //   sameSite: 'None'
+  // };
   res
   .status(200)
-  .cookie('userDetails',user, options)
-  res
-  .status(200)
-  .json(new ApiResponse(200, "product removed from Saved Products"))
+  .json(new ApiResponse(200,user, "product removed from Saved Products"))
 })
 
 const getPopularProducts = AsyncHandler(async(req,res)=>{
