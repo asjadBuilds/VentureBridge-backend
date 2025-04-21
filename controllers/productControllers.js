@@ -220,14 +220,15 @@ const viewProduct = AsyncHandler(async(req,res)=>{
 })
 
 const addToSaveProducts = AsyncHandler(async(req,res)=>{
-  const {productId, userId} = req.body;
+  const {productId} = req.body;
   let user;
-  const alreadySave = await User.findOne({_id:userId,savedProducts:productId})
+  const alreadySave = await User.findOne({_id:req.user._id,savedProducts:productId})
   console.log(alreadySave)
   if(alreadySave) throw new ApiError(400,"User already saved the product")
-  const ownProduct = await Product.findOne({_id:productId,user:userId})
+  const ownProduct = await Product.findOne({_id:productId,user:req.user._id})
+console.log(ownProduct)
   if(!alreadySave && !ownProduct){
-   user = await User.findByIdAndUpdate(userId,{
+   user = await User.findByIdAndUpdate(req.user._id,{
       $push:{savedProducts:productId}
     },{new:true}).select('-password -accessToken -refreshToken')
   }
@@ -244,10 +245,10 @@ const addToSaveProducts = AsyncHandler(async(req,res)=>{
 })
 
 const removeFromSaveProducts = AsyncHandler(async(req,res)=>{
-  const {productId,userId} = req.body;
-  const product = await User.findOne({_id:userId,savedProducts:productId});
+  const {productId} = req.body;
+  const product = await User.findOne({_id:req.user._id,savedProducts:productId});
   if(!product) throw new ApiError(400, "User have no such Product");
-  const user = await User.findByIdAndUpdate(userId,{
+  const user = await User.findByIdAndUpdate(req.user._id,{
     $pull:{savedProducts:productId}
   },{new:true}).select('-password -accessToken -refreshToken')
   const options = {
