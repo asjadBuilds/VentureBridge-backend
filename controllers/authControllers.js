@@ -86,7 +86,7 @@ const signIn = AsyncHandler(async (req, res) => {
     secure: true,
     sameSite: 'none',
     httpOnly: false,
-    // domain: 'https://venturebridge-backend-production.up.railway.app', // Omit for localhost testing
+    domain: 'https://venture-bridge-client.vercel.app', // Omit for localhost testing
     path: '/',
     maxAge: 24 * 60 * 60 * 1000 // 1 day
   };
