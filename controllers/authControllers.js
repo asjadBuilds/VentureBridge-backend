@@ -83,8 +83,8 @@ const signIn = AsyncHandler(async (req, res) => {
     { new: true }
   ).select("-password -refreshToken -resetToken -accessToken");
   const options = {
-    secure: true,
-    sameSite: 'none',
+    secure: false,
+    sameSite: 'Lax',
     httpOnly: false,
     // domain: 'https://venture-bridge-client.vercel.app', // Omit for localhost testing
     path: '/',
