@@ -223,13 +223,21 @@ const addToSaveProducts = AsyncHandler(async(req,res)=>{
   const {productId, userId} = req.body;
   let user;
   const alreadySave = await User.findOne({_id:userId,savedProducts:productId})
+  console.log(alreadySave)
   if(alreadySave) throw new ApiError(400,"User already saved the product")
   const ownProduct = await Product.findOne({_id:productId,user:userId})
   if(!alreadySave && !ownProduct){
    user = await User.findByIdAndUpdate(userId,{
-      $set:{savedProducts:productId}
+      $push:{savedProducts:productId}
     },{new:true}).select('-password -accessToken -refreshToken')
   }
+  const options = {
+    secure: true,
+    sameSite: 'None'
+  };
+  res
+  .status(200)
+  .cookie('userDetails',user, options)
   res
   .status(200)
   .json(new ApiResponse(200, user, "product added to savedProducts" ))
@@ -239,12 +247,28 @@ const removeFromSaveProducts = AsyncHandler(async(req,res)=>{
   const {productId,userId} = req.body;
   const product = await User.findOne({_id:userId,savedProducts:productId});
   if(!product) throw new ApiError(400, "User have no such Product");
-  await User.findByIdAndUpdate(userId,{
+  const user = await User.findByIdAndUpdate(userId,{
     $pull:{savedProducts:productId}
-  },{new:true})
+  },{new:true}).select('-password -accessToken -refreshToken')
+  const options = {
+    secure: true,
+    sameSite: 'None'
+  };
+  res
+  .status(200)
+  .cookie('userDetails',user, options)
   res
   .status(200)
   .json(new ApiResponse(200, "product removed from Saved Products"))
+})
+
+const getPopularProducts = AsyncHandler(async(req,res)=>{
+  const popularProducts = await Product.find()
+  .sort({viewsCount:-1})
+  .limit(20)
+  res
+  .status(200)
+  .json(new ApiResponse(200, popularProducts, "Popular Products fetched"))
 })
 
 export {
@@ -259,5 +283,6 @@ export {
   getProductById,
   viewProduct,
   addToSaveProducts,
-  removeFromSaveProducts
+  removeFromSaveProducts,
+  getPopularProducts
 };

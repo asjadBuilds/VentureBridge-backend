@@ -2,7 +2,7 @@ import express from "express";
 import upload from "../middlewares/multer.middleware.js";
 import { query } from "express-validator";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { addToSaveProducts, createCategory, createProduct, deleteProduct, getAllCategories, getAllProductsByCategory, getProduct, getProductById, getUserProducts, removeFromSaveProducts, updateProduct, viewProduct } from "../controllers/productControllers.js";
+import { addToSaveProducts, createCategory, createProduct, deleteProduct, getAllCategories, getAllProductsByCategory, getPopularProducts, getProduct, getProductById, getUserProducts, removeFromSaveProducts, updateProduct, viewProduct } from "../controllers/productControllers.js";
 const route = express.Router();
 
 route.post('/createProduct',
@@ -40,5 +40,7 @@ route.post('/viewProduct',viewProduct)
 route.post('/addToSaveProducts',addToSaveProducts)
 
 route.post('/removeFromSaveProducts',removeFromSaveProducts)
+
+route.post('/getPopularProducts',getPopularProducts)
 
 export default route;
