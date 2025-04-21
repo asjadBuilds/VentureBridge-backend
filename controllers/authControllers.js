@@ -85,7 +85,7 @@ const signIn = AsyncHandler(async (req, res) => {
   const options = {
     httpOnly: false,
   secure: process.env.NODE_ENV === 'production',
-  sameSite: isDev ? 'Lax' : 'None',
+  sameSite: process.env.NODE_ENV !== 'production' ? 'Lax' : 'None',
   path: '/',
   maxAge: 7 * 24 * 60 * 60 * 1000
   };
