@@ -82,10 +82,9 @@ const signIn = AsyncHandler(async (req, res) => {
     },
     { new: true }
   ).select("-password -refreshToken -resetToken -accessToken");
-  const isDev = process.env.NODE_ENV !== 'production';
   const options = {
     httpOnly: false,
-  secure: !isDev,
+  secure: process.env.NODE_ENV === 'production',
   sameSite: isDev ? 'Lax' : 'None',
   path: '/',
   maxAge: 7 * 24 * 60 * 60 * 1000
