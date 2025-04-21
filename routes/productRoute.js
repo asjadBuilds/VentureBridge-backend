@@ -35,11 +35,13 @@ route.get('/getAllCategories',getAllCategories)
 
 route.post('/getProductById', verifyJWT, getProductById)
 
-route.post('/viewProduct',viewProduct)
+route.post('/viewProduct',verifyJWT,viewProduct)
 
 route.post('/addToSaveProducts',verifyJWT, addToSaveProducts)
 
 route.post('/removeFromSaveProducts',verifyJWT, removeFromSaveProducts)
+
+route.post('/getSavedProducts',verifyJWT, getUserProducts)
 
 route.post('/getPopularProducts',getPopularProducts)
 

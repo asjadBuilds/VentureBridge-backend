@@ -205,11 +205,11 @@ const getProductById = AsyncHandler(async(req,res)=>{
 })
 
 const viewProduct = AsyncHandler(async(req,res)=>{
-  const {productId,userId} = req.body;
-  const alreadyViewed = await ViewProduct.findOne({productId,userId});
-  const ownProduct = await Product.findOne({_id:productId,user:userId})
+  const {productId} = req.body;
+  const alreadyViewed = await ViewProduct.findOne({productId,userId:req.user._id});
+  const ownProduct = await Product.findOne({_id:productId,user:req.user._id})
   if(!alreadyViewed && !ownProduct){
-    await ViewProduct.create({productId,userId});
+    await ViewProduct.create({productId,userId:req.user._id});
     await Product.findByIdAndUpdate(productId,
       {$inc:{viewsCount:1}}
     )
@@ -260,6 +260,13 @@ const removeFromSaveProducts = AsyncHandler(async(req,res)=>{
   .json(new ApiResponse(200,user, "product removed from Saved Products"))
 })
 
+const getSavedProducts = AsyncHandler(async(req,res)=>{
+  const savedProducts = await User.findById(req.user._id).populate('savedProducts')
+  res
+  .status(200)
+  .json(new ApiResponse(200,savedProducts, "Saved Products fetched successfully"))
+})
+
 const getPopularProducts = AsyncHandler(async(req,res)=>{
   const popularProducts = await Product.find()
   .sort({viewsCount:-1})
@@ -282,5 +289,6 @@ export {
   viewProduct,
   addToSaveProducts,
   removeFromSaveProducts,
+  getSavedProducts,
   getPopularProducts
 };
