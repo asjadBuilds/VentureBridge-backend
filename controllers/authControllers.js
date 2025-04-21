@@ -83,7 +83,7 @@ const signIn = AsyncHandler(async (req, res) => {
     { new: true }
   ).select("-password -refreshToken -resetToken -accessToken");
   const options = {
-    secure: true,
+    secure: false,
     sameSite: 'none',
     httpOnly: false,
     // domain: process.env.BACKEND_URL, // Omit for localhost testing
