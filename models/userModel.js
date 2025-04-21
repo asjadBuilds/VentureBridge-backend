@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "UserInfo",
     },
+    savedProducts : [{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"Product"
+    }],
     accessToken: {
       type: String,
     },

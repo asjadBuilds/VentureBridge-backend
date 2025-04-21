@@ -5,6 +5,8 @@ import { uploadFileonCloudinary } from "../utils/cloudinary.js";
 import Product from "../models/productModel.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import Category from "../models/categoryModel.js";
+import ViewProduct from "../models/viewProductModel.js";
+import User from "../models/userModel.js";
 const createProduct = AsyncHandler(async (req, res) => {
   const { title, description, pricing, category } = req.body;
   const result = validationResult(req.body);
@@ -188,8 +190,7 @@ const getAllCategories = AsyncHandler(async (_, res) => {
 });
 
 const getUserProducts = AsyncHandler(async(req,res)=>{
-  const {userId} = req.body;
-  const products = await Product.find({user:userId})
+  const products = await Product.find({user:req.user?._id})
   res.status(200).json(new ApiResponse(200,products,"User Products successfully fetched"));
 })
 
@@ -203,6 +204,49 @@ const getProductById = AsyncHandler(async(req,res)=>{
   .json(new ApiResponse(200, productDetails, "Product Details fetched successfully"))
 })
 
+const viewProduct = AsyncHandler(async(req,res)=>{
+  const {productId,userId} = req.body;
+  const alreadyViewed = await ViewProduct.findOne({productId,userId});
+  const ownProduct = await Product.findOne({_id:productId,user:userId})
+  if(!alreadyViewed && !ownProduct){
+    await ViewProduct.create({productId,userId});
+    await Product.findByIdAndUpdate(productId,
+      {$inc:{viewsCount:1}}
+    )
+  }
+  res
+  .status(200)
+  .json(new ApiResponse(200, "View Product Api Called"))
+})
+
+const addToSaveProducts = AsyncHandler(async(req,res)=>{
+  const {productId, userId} = req.body;
+  let user;
+  const alreadySave = await User.findOne({_id:userId,savedProducts:productId})
+  if(alreadySave) throw new ApiError(400,"User already saved the product")
+  const ownProduct = await Product.findOne({_id:productId,user:userId})
+  if(!alreadySave && !ownProduct){
+   user = await User.findByIdAndUpdate(userId,{
+      $set:{savedProducts:productId}
+    },{new:true}).select('-password -accessToken -refreshToken')
+  }
+  res
+  .status(200)
+  .json(new ApiResponse(200, user, "product added to savedProducts" ))
+})
+
+const removeFromSaveProducts = AsyncHandler(async(req,res)=>{
+  const {productId,userId} = req.body;
+  const product = await User.findOne({_id:userId,savedProducts:productId});
+  if(!product) throw new ApiError(400, "User have no such Product");
+  await User.findByIdAndUpdate(userId,{
+    $pull:{savedProducts:productId}
+  },{new:true})
+  res
+  .status(200)
+  .json(new ApiResponse(200, "product removed from Saved Products"))
+})
+
 export {
   createProduct,
   createCategory,
@@ -212,5 +256,8 @@ export {
   getAllProductsByCategory,
   getAllCategories,
   getUserProducts,
-  getProductById
+  getProductById,
+  viewProduct,
+  addToSaveProducts,
+  removeFromSaveProducts
 };

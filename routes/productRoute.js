@@ -2,7 +2,7 @@ import express from "express";
 import upload from "../middlewares/multer.middleware.js";
 import { query } from "express-validator";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { createCategory, createProduct, deleteProduct, getAllCategories, getAllProductsByCategory, getProduct, getProductById, getUserProducts, updateProduct } from "../controllers/productControllers.js";
+import { addToSaveProducts, createCategory, createProduct, deleteProduct, getAllCategories, getAllProductsByCategory, getProduct, getProductById, getUserProducts, removeFromSaveProducts, updateProduct, viewProduct } from "../controllers/productControllers.js";
 const route = express.Router();
 
 route.post('/createProduct',
@@ -17,7 +17,7 @@ route.post('/createProduct',
     createProduct);
 
 route.post('/getProduct',getProduct)
-route.post('/getUserProducts',getUserProducts)
+route.post('/getUserProducts',verifyJWT, getUserProducts)
 route.post('/createCategory',[
     query('title').isEmpty(),
     query('categoryId').isEmpty()
@@ -33,6 +33,12 @@ route.post('/getProductsByCategory', getAllProductsByCategory)
 
 route.get('/getAllCategories',getAllCategories)
 
-route.post('/getProductById', getProductById)
+route.post('/getProductById', verifyJWT, getProductById)
+
+route.post('/viewProduct',viewProduct)
+
+route.post('/addToSaveProducts',addToSaveProducts)
+
+route.post('/removeFromSaveProducts',removeFromSaveProducts)
 
 export default route;
