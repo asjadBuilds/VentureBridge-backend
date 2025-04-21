@@ -83,10 +83,10 @@ const signIn = AsyncHandler(async (req, res) => {
     { new: true }
   ).select("-password -refreshToken -resetToken -accessToken");
   const options = {
-    secure: false,
+    secure: true,
     sameSite: 'none',
     httpOnly: false,
-    // domain: process.env.BACKEND_URL, // Omit for localhost testing
+    domain: 'https://venturebridge-backend-production.up.railway.app', // Omit for localhost testing
     path: '/',
     maxAge: 24 * 60 * 60 * 1000 // 1 day
   };
