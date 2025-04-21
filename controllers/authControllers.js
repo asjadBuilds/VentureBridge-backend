@@ -90,6 +90,7 @@ const signIn = AsyncHandler(async (req, res) => {
     .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
+    .cookie("userDetails",loggedInUser, options)
     .json(
       new ApiResponse(
         200,
