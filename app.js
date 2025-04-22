@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import { Server } from 'socket.io';
 import http from 'http';
 import { socketManager } from "./socketManager.js";
+import ApiError from "./utils/ApiError.js";
 const app = express();
 dotenv.config();
 const server = http.createServer(app);
@@ -43,6 +44,23 @@ server.listen(process.env.PORT, ()=>{
 
 app.use('/api',router);
 
+// Global error-handling middleware
+app.use((err, req, res, next) => {
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      statusbar:err.statusCode,
+      success: err.success,
+      message: err.message,
+      errors: err.errors
+    });
+  }
+
+  // Handle non-ApiError cases (generic error handling)
+  return res.status(500).json({
+    success: false,
+    message: "Internal Server Error"
+  });
+});
 
 
 export {app, twilioClient};
