@@ -20,7 +20,7 @@ route.post("/loginUser",[
 
 route.post("/logoutUser", verifyJWT, logout);
 
-route.post("/refreshToken", verifyJWT, refreshAccessToken);
+route.post("/refreshToken",  refreshAccessToken);
 
 route.post("/forgetPassword", [
     query("email").notEmpty().isEmail()
