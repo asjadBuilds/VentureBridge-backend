@@ -1,3 +1,4 @@
+import { timeStamp } from "console";
 import { mongoose } from "mongoose";
 
 const productSchema = new mongoose.Schema({
@@ -45,7 +46,7 @@ const productSchema = new mongoose.Schema({
         type:Number,
         default:0
     }
-})
+},{timeStamp:true})
 
 const Product = mongoose.model("Product", productSchema);
 

@@ -276,6 +276,36 @@ const getPopularProducts = AsyncHandler(async(req,res)=>{
   .json(new ApiResponse(200, popularProducts, "Popular Products fetched"))
 })
 
+const getFilterProducts = AsyncHandler(async(req,res)=>{
+  const {popularityFlag ,minPrice, maxPrice,categoryId,startDate,endDate} = req.body;
+  const popularity = popularityFlag === "POPULAR" ? -1 : "NEW" ? 1 : 0;
+  let filterProducts = null;
+  if(popularityFlag && minPrice && maxPrice && startDate && endDate){
+  filterProducts = await Product.find({"pricing.$.minPrice":{$gt:minPrice},"pricing.$.maxPrice":{$lt:maxPrice},category:categoryId},{createdAt:{$gt:startDate,$lt:endDate}}).sort({viewsCount:popularity})
+  }
+  else if(popularityFlag && minPrice && maxPrice){
+    filterProducts = await Product.find({"pricing.$.minPrice":{$gt:minPrice},"pricing.$.maxPrice":{$lt:maxPrice},category:categoryId}).sort({viewsCount:popularity})
+  }
+  else if(minPrice && maxPrice && startDate && endDate){
+    filterProducts = await Product.find({"pricing.$.minPrice":{$gt:minPrice},"pricing.$.maxPrice":{$lt:maxPrice},category:categoryId},{createdAt:{$gt:startDate,$lt:endDate}})
+  }
+  else if(popularityFlag && startDate && endDate){
+    filterProducts = await Product.find({category:categoryId},{createdAt:{$gt:startDate,$lt:endDate}}).sort({viewsCount:popularity})
+  }
+  else if(popularityFlag){
+    filterProducts = await Product.find({category:categoryId}).sort({viewsCount:popularity})
+  }
+  else if(minPrice && maxPrice){
+    filterProducts = await Product.find({"pricing.$.minPrice":{$gt:minPrice},"pricing.$.maxPrice":{$lt:maxPrice}},{category:categoryId})
+  }
+  else if(startDate && endDate){
+    filterProducts = await Product.find({category:categoryId},{createdAt:{$gt:startDate,$lt:endDate}})
+  }
+  res
+  .status(200)
+  .json(new ApiResponse(200,filterProducts,"Filtered Products fetched successfully"))
+})
+
 export {
   createProduct,
   createCategory,

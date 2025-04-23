@@ -87,13 +87,12 @@ const signIn = AsyncHandler(async (req, res) => {
     sameSite: 'none',
     httpOnly: false,
     path: '/',
-    maxAge: 24 * 60 * 60 * 1000 // 1 day
+    maxAge: 8 * 60 * 60 * 1000, // 8 hours
   };
   return res
     .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .cookie("userDetails",loggedInUser, options)
     .json(
       new ApiResponse(
         200,
